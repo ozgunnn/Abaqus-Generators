@@ -17,7 +17,7 @@ b=160.0 #section width
 d=300.0 #concrete width/depth
 cc=20.0  #clear cover
 L=3000.0 #extrude length
-nocores=6
+nocores=5
 #
 lrd=20.0 #longitudinal rebar diameter
 nr=12 #number of lrebars
