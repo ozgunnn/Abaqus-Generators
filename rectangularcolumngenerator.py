@@ -377,6 +377,6 @@ session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
     memory=90, memoryUnits=PERCENTAGE, model=name, modelPrint=OFF, 
-    multiprocessingMode=DEFAULT, name='Job-'+name, nodalOutputPrecision=SINGLE, 
+    multiprocessingMode=DEFAULT, name='Job_'+name, nodalOutputPrecision=SINGLE, 
     numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)

@@ -4,9 +4,8 @@ import regionToolset
 import math
 import numpy as np
 
-
 axis='Strong'
-e=35.0 #load eccentricity
+e=15.0 #load eccentricity
 ez=50.0 #rp distance from edge
 tf=13.0 #flange thickness
 tw=8.0 #web thickness
@@ -15,7 +14,7 @@ t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 b=160.0 #section width
-d=350.0 #concrete diameter
+d=300.0 #concrete width/depth
 cc=20.0  #clear cover
 L=3000.0 #extrude length
 nocores=6
@@ -44,7 +43,6 @@ Esh=(fu-fy)/(C2*eu-esh)
 Ey=210000
 ey=fy/Ey
 fc1eu=fy+(C1*eu-esh)*Esh
-
 
 ec1=0.001*min(0.7*fcm**0.31,2.8)
 ecu1=0.001*min(3.5,2.8+27*((98-fcm)/float(100))**4)
@@ -92,6 +90,7 @@ while i in range(len(cuttab[:,1])):
     else:
         i=i+1
 
+
 sigma_eps=np.zeros((5,2))
 sigma_eps[0,:]=(0,0)
 sigma_eps[1,:]=(ey-ey,fy)
@@ -117,8 +116,8 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-name='_'.join(['circ','d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),axis])
-column_model=mdb.Model(name=name+'_buckle', modelType=STANDARD_EXPLICIT)
+name='_'.join(['rect','d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+column_model=mdb.Model(name=name+'_imp', modelType=STANDARD_EXPLICIT)
 
 import material
 
@@ -156,7 +155,7 @@ concrete_sketch.Line(point1=(-tw/2,-(h/2-tf)),point2=(-tw/2,(h/2-tf)))
 concrete_sketch.Line(point1=(-tw/2,(h/2-tf)),point2=(-b/2,(h/2-tf)))
 concrete_sketch.Line(point1=(-b/2,(h/2-tf)),point2=(-b/2,h/2))
 concrete_sketch.Line(point1=(-b/2,h/2),point2=(b/2,h/2))
-concrete_sketch.CircleByCenterPerimeter((0,0),(0,d/2))
+concrete_sketch.rectangle(point1=(d/2, d/2), point2=(-d/2, -d/2))
 
 concrete_part=column_model.Part(name='concrete',dimensionality=THREE_D,type=DEFORMABLE_BODY)
 concrete_part.BaseSolidExtrude(sketch=concrete_sketch,depth=L)
@@ -185,7 +184,7 @@ rebar_part=column_model.Part(name='Rebar',dimensionality=THREE_D,type=DEFORMABLE
 rebar_part.BaseWire(sketch=rebar_sketch)
 
 stirrup_sketch=column_model.ConstrainedSketch(name='rebar',sheetSize=160)
-stirrup_sketch.CircleByCenterPerimeter((0,0),(0,d/2-cc-std/2))
+stirrup_sketch.rectangle((d/2-cc-std/2,d/2-cc-std/2),(-(d/2-cc-std/2),-(d/2-cc-std/2)))
 stirrup_part=column_model.Part(name='Stirrup',dimensionality=THREE_D,type=DEFORMABLE_BODY)
 stirrup_part.BaseWire(sketch=stirrup_sketch)
 
@@ -195,7 +194,7 @@ column_model.HomogeneousShellSection(name='sec_flange', preIntegrate=OFF, materi
 column_model.HomogeneousShellSection(name='sec_web', preIntegrate=OFF, material='mat_profile', thicknessType=UNIFORM, thickness=tw, thicknessField='', nodalThicknessField='', idealization=NO_IDEALIZATION, poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, useDensity=OFF,integrationRule=SIMPSON, numIntPts=5)
 
 f=beam_part.faces
-faces_fl=f.findAt(((b/4,h/2-tf/2,L/4),),((-b/4,h/2-tf/2,L/4),),((-b/4,-(h/2-tf/2),L/4),),((b/4,-(h/2-tf/2),L/4),))
+faces_fl=f.findAt(((b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,-(h/2.0-tf/2.0),L/4),),((b/4.0,-(h/2.0-tf/2.0),L/4),))
 faces_web=f.findAt((0,0,L/4),)
 
 region_fl = (faces_fl,)
@@ -224,14 +223,30 @@ columnAssembly=column_model.rootAssembly
 concreteInstance=columnAssembly.Instance(name='Concrete Instance',part=concrete_part,dependent=ON)
 profileInstance=columnAssembly.Instance(name='Profile Instance',part=beam_part,dependent=ON)
 lrebarInstance=columnAssembly.Instance(name='Lrebar Instance',part=rebar_part,dependent=ON)
+lrebarInstance=columnAssembly.Instance(name='Lrebar Instance1',part=rebar_part,dependent=ON)
+lrebarInstance=columnAssembly.Instance(name='Lrebar Instance2',part=rebar_part,dependent=ON)
+lrebarInstance=columnAssembly.Instance(name='Lrebar Instance3',part=rebar_part,dependent=ON)
 stirrupInstance=columnAssembly.Instance(name='Stirrup Instance',part=stirrup_part,dependent=ON)
 columnAssembly.regenerate()
 
 columnAssembly.rotate(instanceList=('Lrebar Instance', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
-columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(0.0, d/2-cc-std-lrd/2, 0.0))
+columnAssembly.rotate(instanceList=('Lrebar Instance1', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
+columnAssembly.rotate(instanceList=('Lrebar Instance2', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
+columnAssembly.rotate(instanceList=('Lrebar Instance3', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
+
+columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(d/2-cc-std-lrd/2, d/2-cc-std-lrd/2, 0.0))
+columnAssembly.translate(instanceList=('Lrebar Instance1', ), vector=(d/2-cc-std-lrd/2, -(d/2-cc-std-lrd/2), 0.0))
+columnAssembly.translate(instanceList=('Lrebar Instance2', ), vector=(-d/2+cc+std+lrd/2, -d/2+cc+std+lrd/2, 0.0))
+columnAssembly.translate(instanceList=('Lrebar Instance3', ), vector=(-d/2+cc+std+lrd/2, d/2-cc-std-lrd/2, 0.0))
+
 columnAssembly.translate(instanceList=('Stirrup Instance', ), vector=(0.0, 0.0, sts/2))
+
+columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance', ), direction1=(0.0, -1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance1', ), direction1=(-1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance2', ), direction1=(0.0, 1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance3', ), direction1=(1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+
 columnAssembly.LinearInstancePattern(instanceList=('Stirrup Instance', ), direction1=(0.0, 0.0, 1.0), direction2=(0.0, 1.0, 0.0), number1=int((L-sts/2)/sts)+1, number2=1, spacing1=sts, spacing2=sts)
-columnAssembly.RadialInstancePattern(instanceList=('Lrebar Instance', ), point=(0.0, 0.0, 0.0), axis=(0.0, 0.0, 1.0), number=nr, totalAngle=360.0)
 
 #stirrupsset=columnAssembly.edges.getByBoundingCylinder(center1=(0,d/2,-5) ,center2=(0,d/2,L+5),radius=500)
 #stirrupsset=columnAssembly.instances[findAt(0.0, d/2-cc-std/2, sts/2)]
@@ -314,8 +329,7 @@ column_model.ContactProperty('Int_Fric')
 column_model.interactionProperties['Int_Fric'].TangentialBehavior(formulation=PENALTY, directionality=ISOTROPIC, slipRateDependency=OFF, pressureDependency=OFF, temperatureDependency=OFF, dependencies=0, table=((0.5, ), ), shearStressLimit=None, maximumElasticSlip=FRACTION, fraction=0.005, elasticSlipStiffness=None)
 column_model.interactionProperties['Int_Fric'].NormalBehavior(pressureOverclosure=HARD, allowSeparation=ON, constraintEnforcementMethod=DEFAULT)
 
-column_model.ContactStd(createStepName='Initial', name='Inter')
-#column_model.ContactExp(name='Inter', createStepName='Initial')
+column_model.ContactExp(name='Inter', createStepName='Initial')
 column_model.interactions['Inter'].includedPairs.setValuesInStep(stepName='Initial', useAllstar=ON)
 column_model.interactions['Inter'].contactPropertyAssignments.appendInStep(stepName='Initial', assignments=((GLOBAL, SELF, 'Int_Fric'), ))
 
@@ -325,16 +339,13 @@ e1 = columnAssembly.instances['Profile Instance'].edges
 edges1 = e1.getByBoundingBox(zMin=L,zMax=L+1)
 column_model.ZsymmBC(name='BC-sim', createStepName='Initial', region=(faces1,edges1,), localCsys=None)
 
-
-
-column_model.BuckleStep(name='Step-1', numEigen=2, previous='Initial', vectors=4)
-#column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
-#column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
+column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
+column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
 
 r1 = columnAssembly.referencePoints.findAt(refcoord)
-column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=UNSET, ur1=UNSET, ur2=UNSET, ur3=0, fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
-column_model.ConcentratedForce(cf3=1.0, createStepName='Step-1', distributionType=UNIFORM, field='', localCsys=None , name='Load-1', region=(r1,), )
-#column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
+column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
+
+column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
 import mesh 
 
 region_profile_mesh=(f,)
@@ -363,15 +374,13 @@ column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 
-
-
 mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
-    memory=90, memoryUnits=PERCENTAGE, model=name+'_buckle', modelPrint=OFF, 
-    multiprocessingMode=DEFAULT, name='Job_'+name+'_buckle', nodalOutputPrecision=SINGLE, 
-    numCpus=1, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
+    memory=90, memoryUnits=PERCENTAGE, model=name+'_imp', modelPrint=OFF, 
+    multiprocessingMode=DEFAULT, name='Job_'+name+'_imp', nodalOutputPrecision=SINGLE, 
+    numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
 
 column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
 column_model.keywordBlock.setValues()
-column_model.keywordBlock.insert(position=152,text='*NODE FILE \nU')
+column_model.keywordBlock.insert(position=105,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(L/500)+'\n2,'+str(L/500)+'')
