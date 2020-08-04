@@ -324,11 +324,12 @@ e1 = columnAssembly.instances['Profile Instance'].edges
 edges1 = e1.getByBoundingBox(zMin=L,zMax=L+1)
 column_model.ZsymmBC(name='BC-sim', createStepName='Initial', region=(faces1,edges1,), localCsys=None)
 
-column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
-column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
+column_model.BuckleStep(name='Step-1', numEigen=2, previous='Initial', vectors=4)
+#column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
+#column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
 
 r1 = columnAssembly.referencePoints.findAt(refcoord)
-column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
+#column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
 
 column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
 import mesh 
@@ -362,6 +363,6 @@ session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
     memory=90, memoryUnits=PERCENTAGE, model=name, modelPrint=OFF, 
-    multiprocessingMode=DEFAULT, name='Job-'+name, nodalOutputPrecision=SINGLE, 
+    multiprocessingMode=DEFAULT, name='Job-'+name+'-buckle', nodalOutputPrecision=SIN#GLE, 
     numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
