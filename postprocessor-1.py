@@ -20,4 +20,3 @@ for i in range(len(odb.rootAssembly.instances['PROFILESHELLPART-1'].nodes)):
     if distdum<distin:
         distin=distdum
         label=odb.rootAssembly.instances['PROFILESHELLPART-1'].nodes[i].label
-        print[i]
