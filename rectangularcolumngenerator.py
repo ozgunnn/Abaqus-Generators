@@ -90,7 +90,6 @@ while i in range(len(cuttab[:,1])):
     else:
         i=i+1
 
-
 sigma_eps=np.zeros((5,2))
 sigma_eps[0,:]=(0,0)
 sigma_eps[1,:]=(ey-ey,fy)

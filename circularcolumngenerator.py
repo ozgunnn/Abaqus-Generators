@@ -4,7 +4,6 @@ import regionToolset
 import math
 import numpy as np
 
-
 axis='Strong'
 e=35.0 #load eccentricity
 ez=50.0 #rp distance from edge
@@ -44,7 +43,6 @@ Esh=(fu-fy)/(C2*eu-esh)
 Ey=210000
 ey=fy/Ey
 fc1eu=fy+(C1*eu-esh)*Esh
-
 
 ec1=0.001*min(0.7*fcm**0.31,2.8)
 ecu1=0.001*min(3.5,2.8+27*((98-fcm)/float(100))**4)
