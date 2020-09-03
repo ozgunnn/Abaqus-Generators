@@ -425,9 +425,21 @@ if bucklestep==1:
     multiprocessingMode=DEFAULT, name='Job_'+name+'_buckle', nodalOutputPrecision=SINGLE, 
     numCpus=1, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
+
     column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
     column_model.keywordBlock.setValues()
-    column_model.keywordBlock.insert(position=152,text='*NODE FILE \nU')
+    line_num = 0
+    for n, line in enumerate(column_model.keywordBlock.sieBlocks):
+        if line == '*Restart, write, frequency=0':
+            line_num = n
+            break
+    if line_num:
+        column_model.keywordBlock.insert(position=line_num,text='*NODE FILE \nU')
+    else:
+        e = ("Error: Part '{}' was not found".format(partname),
+            "in the Model KeywordBlock.")
+        raise Exception(" ".join(e))
+
     
 elif perfectstep==1:
     mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
