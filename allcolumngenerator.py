@@ -6,6 +6,7 @@ import numpy as np
 
 perfectstep=0 #only one of these can be 1
 bucklestep=1 #only one of these can be 1
+geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 axis='Strong'  #Strong or Weak
 shape='Circular' #Square or Circular
 e=15.0 #load eccentricity
@@ -19,7 +20,7 @@ u=10.0 #assigned deformation
 b=160.0 #section width
 d=300.0 #concrete width/depth
 cc=20.0  #clear cover
-L=3000.0 #extrude length
+L=3000.0 #extrude length (half length)
 nocores=6
 #
 lrd=20.0 #longitudinal rebar diameter
@@ -124,6 +125,8 @@ if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
 elif bucklestep==1:
     column_model=mdb.Model(name=name+'_buckle', modelType=STANDARD_EXPLICIT)
+elif geoimpstep==1:
+    column_model=mdb.Model(name=name+'_geoimp', modelType=STANDARD_EXPLICIT)
 
 import material
 
@@ -448,3 +451,25 @@ elif perfectstep==1:
     multiprocessingMode=DEFAULT, name='Job_'+name, nodalOutputPrecision=SINGLE, 
     numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
+
+elif geoimpstep==1:
+    mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
+    explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
+    memory=90, memoryUnits=PERCENTAGE, model=name+'_geoimp', modelPrint=OFF, 
+    multiprocessingMode=DEFAULT, name='Job_'+name+'_geoimp', nodalOutputPrecision=SINGLE, 
+    numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
+    '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
+
+    column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
+    column_model.keywordBlock.setValues()
+    line_num = 0
+    for n, line in enumerate(column_model.keywordBlock.sieBlocks):
+        if line == '** ----------------------------------------------------------------\n** \n** STEP: Step-1\n** ':
+            line_num = n
+            break
+    if line_num:
+        column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(L/500)+'\n2,'+str(L/500)+'')
+    else:
+        e = ("Error: Part '{}' was not found".format(partname),
+            "in the Model KeywordBlock.")
+        raise Exception(" ".join(e))
