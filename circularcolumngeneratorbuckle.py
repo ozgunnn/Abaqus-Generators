@@ -4,7 +4,6 @@ import regionToolset
 import math
 import numpy as np
 
-
 axis='Strong'
 e=35.0 #load eccentricity
 ez=50.0 #rp distance from edge
@@ -44,7 +43,6 @@ Esh=(fu-fy)/(C2*eu-esh)
 Ey=210000
 ey=fy/Ey
 fc1eu=fy+(C1*eu-esh)*Esh
-
 
 ec1=0.001*min(0.7*fcm**0.31,2.8)
 ecu1=0.001*min(3.5,2.8+27*((98-fcm)/float(100))**4)
@@ -315,7 +313,6 @@ column_model.interactionProperties['Int_Fric'].TangentialBehavior(formulation=PE
 column_model.interactionProperties['Int_Fric'].NormalBehavior(pressureOverclosure=HARD, allowSeparation=ON, constraintEnforcementMethod=DEFAULT)
 
 column_model.ContactStd(createStepName='Initial', name='Inter')
-#column_model.ContactExp(name='Inter', createStepName='Initial')
 column_model.interactions['Inter'].includedPairs.setValuesInStep(stepName='Initial', useAllstar=ON)
 column_model.interactions['Inter'].contactPropertyAssignments.appendInStep(stepName='Initial', assignments=((GLOBAL, SELF, 'Int_Fric'), ))
 
@@ -362,8 +359,6 @@ column_model.parts['Lrebars'].seedPart(size=30.0, deviationFactor=0.1, minSizeFa
 column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
-
-
 
 mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 

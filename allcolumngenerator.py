@@ -4,6 +4,8 @@ import regionToolset
 import math
 import numpy as np
 
+perfectstep=0 #only one of these can be 1
+bucklestep=1 #only one of these can be 1
 axis='Strong'  #Strong or Weak
 shape='Circular' #Square or Circular
 e=15.0 #load eccentricity
@@ -117,7 +119,11 @@ session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
 name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
-column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
+
+if perfectstep==1:
+    column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
+elif bucklestep==1:
+    column_model=mdb.Model(name=name+'_buckle', modelType=STANDARD_EXPLICIT)
 
 import material
 
@@ -356,7 +362,10 @@ column_model.ContactProperty('Int_Fric')
 column_model.interactionProperties['Int_Fric'].TangentialBehavior(formulation=PENALTY, directionality=ISOTROPIC, slipRateDependency=OFF, pressureDependency=OFF, temperatureDependency=OFF, dependencies=0, table=((0.5, ), ), shearStressLimit=None, maximumElasticSlip=FRACTION, fraction=0.005, elasticSlipStiffness=None)
 column_model.interactionProperties['Int_Fric'].NormalBehavior(pressureOverclosure=HARD, allowSeparation=ON, constraintEnforcementMethod=DEFAULT)
 
-column_model.ContactExp(name='Inter', createStepName='Initial')
+if bucklestep==1:
+    column_model.ContactStd(createStepName='Initial', name='Inter')
+else:
+    column_model.ContactExp(name='Inter', createStepName='Initial')
 column_model.interactions['Inter'].includedPairs.setValuesInStep(stepName='Initial', useAllstar=ON)
 column_model.interactions['Inter'].contactPropertyAssignments.appendInStep(stepName='Initial', assignments=((GLOBAL, SELF, 'Int_Fric'), ))
 
@@ -366,13 +375,21 @@ e1 = columnAssembly.instances['Profile Instance'].edges
 edges1 = e1.getByBoundingBox(zMin=L,zMax=L+1)
 column_model.ZsymmBC(name='BC-sim', createStepName='Initial', region=(faces1,edges1,), localCsys=None)
 
-column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
-column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
+if bucklestep==1:
+    column_model.BuckleStep(name='Step-1', numEigen=2, previous='Initial', vectors=4)
+else:
+    column_model.SmoothStepAmplitude(name='Amp-1', timeSpan=STEP, data=((0.0, 0.0), (t, 1.0)))
+    column_model.ExplicitDynamicsStep(name='Step-1', previous='Initial', timePeriod=t, massScaling=((SEMI_AUTOMATIC, MODEL, AT_BEGINNING, ms, 0.0, None, 0, 0, 0.0, 0.0, 0, None), ), improvedDtMethod=ON)
 
 r1 = columnAssembly.referencePoints.findAt(refcoord)
-column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
 
-column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
+if bucklestep==1:
+    column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=UNSET, ur1=UNSET, ur2=UNSET, ur3=0, fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
+    column_model.ConcentratedForce(cf3=1.0, createStepName='Step-1', distributionType=UNIFORM, field='', localCsys=None , name='Load-1', region=(r1,), )
+else:
+    column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
+    column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
+
 import mesh 
 
 region_profile_mesh=(f,)
@@ -401,7 +418,19 @@ column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 
-mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
+if bucklestep==1:
+    mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
+    explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
+    memory=90, memoryUnits=PERCENTAGE, model=name+'_buckle', modelPrint=OFF, 
+    multiprocessingMode=DEFAULT, name='Job_'+name+'_buckle', nodalOutputPrecision=SINGLE, 
+    numCpus=1, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
+    '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
+    column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
+    column_model.keywordBlock.setValues()
+    column_model.keywordBlock.insert(position=152,text='*NODE FILE \nU')
+    
+elif perfectstep==1:
+    mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
     memory=90, memoryUnits=PERCENTAGE, model=name, modelPrint=OFF, 
     multiprocessingMode=DEFAULT, name='Job_'+name, nodalOutputPrecision=SINGLE, 
