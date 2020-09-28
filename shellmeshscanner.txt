@@ -1,0 +1,10 @@
+c1=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[0].coordinates
+c2=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[1].coordinates
+d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+
+nef=round(b/d) #no of elements in the width of flange
+ned=round(h-2*tf/d) #no of elements in the depth of web
+
+#el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=0, yMin=-d , yMax=d, zMin = 0, zMax = 3000)
+el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,2*d,0),center2=(0,2*d,3000),radius =0.75*d)
+column_model.parts['Beam'].Set(elements= el, name='Set-2')

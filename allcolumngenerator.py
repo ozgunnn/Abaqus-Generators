@@ -29,7 +29,7 @@ std=8.0 #stirrup diameter
 sts=100.0 #stirrup spacing
 fs=500.0*1.1 #rebaryield
 fy=550.0*1.1 #profileyield
-fcm=100.0*1.3 #concrete compressive strength
+fcm=40.0*1.3 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
