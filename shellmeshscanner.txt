@@ -1,10 +1,35 @@
-c1=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[0].coordinates
-c2=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[1].coordinates
-d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+#c1=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[0].coordinates
+#c2=column_model.parts['Beam'].elements[0].getElemEdges()[0].getNodes()[1].coordinates
+#d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
 
-nef=round(b/d) #no of elements in the width of flange
-ned=round(h-2*tf/d) #no of elements in the depth of web
+#nef=round(b/d) #no of elements in the width of flange
+#ned=round(h-2*tf/d) #no of elements in the depth of web
 
 #el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=0, yMin=-d , yMax=d, zMin = 0, zMax = 3000)
-el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,2*d,0),center2=(0,2*d,3000),radius =0.75*d)
-column_model.parts['Beam'].Set(elements= el, name='Set-2')
+#el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,2*d,0),center2=(0,2*d,3000),radius =0.75*d)
+
+#el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-2*tf)/2,0),center2=(b/2-15,(h-2*tf)/2,40),radius =20)
+#column_model.parts['Beam'].Set(elements= el, name='Set-2')
+
+el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-2*tf)/2,0),center2=(b/2-15,(h-2*tf)/2,40),radius =20)
+
+fl_mesh_a=30
+for i in range(4):
+	c1=el[0].getElemEdges()[i].getNodes()[0].coordinates
+	c2=el[0].getElemEdges()[i].getNodes()[1].coordinates
+	d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+	if d < fl_mesh_a:
+		fl_mesh_a = d
+
+el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,0,0),center2=(0,0,40),radius =30)
+
+wb_mesh_a=30
+for i in range(4):
+	c1=el[0].getElemEdges()[i].getNodes()[0].coordinates
+	c2=el[0].getElemEdges()[i].getNodes()[1].coordinates
+	d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+	if d < wb_mesh_a:
+		wb_mesh_a = d
+
+nef=round(b/fl_mesh_a) #no of elements in the width of flange
+ned=round((h-2*tf)/wb_mesh_a) #no of elements in the depth of web
