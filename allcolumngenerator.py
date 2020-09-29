@@ -4,8 +4,8 @@ import regionToolset
 import math
 import numpy as np
 
-perfectstep=0 #only one of these can be 1
-bucklestep=1 #only one of these can be 1
+perfectstep=1 #only one of these can be 1
+bucklestep=0 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 axis='Strong'  #Strong or Weak
 shape='Circular' #Square or Circular

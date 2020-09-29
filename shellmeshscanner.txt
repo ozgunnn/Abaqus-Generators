@@ -25,15 +25,20 @@ for i in range(4):
 nef=round(b/fl_mesh_a) #no of elements in the width of flange
 ned=round((h-tf)/wb_mesh_a) #no of elements in the depth of web
 
+import regionToolset
+
+column_model.parts['Beam'].MaterialOrientation( additionalRotationField='', additionalRotationType=ROTATION_ANGLE, angle=90.0, axis=AXIS_1, fieldName='', localCsys=None, orientationType=SYSTEM, region=regionToolset.Region(faces=column_model.parts['Beam'].faces))
+
 for i in range(int(ned)):
 	y=-1*((h-tf)/2-wb_mesh_a/2)+i*wb_mesh_a
 	el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,y,0),center2=(0,y,L),radius =wb_mesh_a/2)
 	column_model.parts['Beam'].Set(elements= el, name='W_Set_y='+str(int(y)))
-	#here will come the code to populate res stresses
+	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'W_Set_y='+str(int(y)), region=column_model.rootAssembly.instances['Profile Instance'].sets['W_Set_y='+str(int(y))], sigma11=100.0, sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
 
 for i in range(int(nef)):
 	x=-1*(b/2-fl_mesh_a/2)+i*fl_mesh_a
 	el1 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,(h-tf)/2,0),center2=(x,(h-tf)/2,L),radius =fl_mesh_a/2)
 	el2 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,-1*(h-tf)/2,0),center2=(x,-1*(h-tf)/2,L),radius =fl_mesh_a/2)
 	column_model.parts['Beam'].Set(elements= el1+el2, name='FL_Set_x='+str(int(x)))
-	#here will come the code to populate res stresses
+	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'FL_Set_x='+str(int(x)), region=column_model.rootAssembly.instances['Profile Instance'].sets['FL_Set_x='+str(int(x))], sigma11=100.0, sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
+	
