@@ -13,14 +13,14 @@ e=15.0 #load eccentricity
 ez=50.0 #rp distance from edge
 tf=13.0 #flange thickness
 tw=8.0 #web thickness
-h=83.0 #section depth
+h=200.0 #section depth
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
-b=83.0 #section width
+b=200.0 #section width
 d=300.0 #concrete width/depth
 cc=20.0  #clear cover
-L=3000.0 #extrude length (half length)
+L=2500.0 #extrude length (half length)
 nocores=6
 #
 lrd=20.0 #longitudinal rebar diameter
