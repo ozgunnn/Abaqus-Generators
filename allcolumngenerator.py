@@ -13,11 +13,11 @@ e=15.0 #load eccentricity
 ez=50.0 #rp distance from edge
 tf=13.0 #flange thickness
 tw=8.0 #web thickness
-h=160.0 #section depth
+h=83.0 #section depth
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
-b=160.0 #section width
+b=83.0 #section width
 d=300.0 #concrete width/depth
 cc=20.0  #clear cover
 L=3000.0 #extrude length (half length)
@@ -182,10 +182,10 @@ concrete_part.PartitionCellByPlaneThreePoints(cells=concrete_part.cells,point1=(
 
 beam_sketch=column_model.ConstrainedSketch(name='beam',sheetSize=160)
 
-beam_sketch.Line(point1=(-h/2,(h-tf)/2),point2=(0,(h-tf)/2))
-beam_sketch.Line(point1=(0,(h-tf)/2),point2=(h/2,(h-tf)/2))
-beam_sketch.Line(point1=(-h/2,-(h-tf)/2),point2=(0,-(h-tf)/2))
-beam_sketch.Line(point1=(0,-(h-tf)/2),point2=(h/2,-(h-tf)/2))
+beam_sketch.Line(point1=(-b/2,(h-tf)/2),point2=(0,(h-tf)/2))
+beam_sketch.Line(point1=(0,(h-tf)/2),point2=(b/2,(h-tf)/2))
+beam_sketch.Line(point1=(-b/2,-(h-tf)/2),point2=(0,-(h-tf)/2))
+beam_sketch.Line(point1=(0,-(h-tf)/2),point2=(b/2,-(h-tf)/2))
 beam_sketch.Line(point1=(0,-1*(h-tf)/2),point2=(0,(h-tf)/2))
 
 beam_part=column_model.Part(name='Beam',dimensionality=THREE_D,type=DEFORMABLE_BODY)
