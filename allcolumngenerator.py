@@ -4,32 +4,32 @@ import regionToolset
 import math
 import numpy as np
 
-perfectstep=1 #only one of these can be 1
+perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 axis='Strong'  #Strong or Weak
-shape='Circular' #Square or Circular
-e=15.0 #load eccentricity
+shape='Square' #Square or Circular
+e=0.0 #load eccentricity
 ez=50.0 #rp distance from edge
-tf=13.0 #flange thickness
-tw=8.0 #web thickness
-h=160.0 #section depth
+tf=16.0 #flange thickness
+tw=9.5 #web thickness
+h=220.0 #section depth
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
-b=160.0 #section width
-d=300.0 #concrete width/depth
+b=220.0 #section width
+d=350.0 #concrete width/depth
 cc=20.0  #clear cover
 L=3000.0 #extrude length (half length)
 nocores=6
 #
-lrd=16.0 #longitudinal rebar diameter
-nr=8 #number of lrebars
+lrd=20.0 #longitudinal rebar diameter
+nr=16 #number of lrebars
 std=8.0 #stirrup diameter
 sts=100.0 #stirrup spacing
-fs=460.0*1.0 #rebaryield
+fs=700.0*1.0 #rebaryield
 fy=460.0*1.0 #profileyield
-fcm=58.0*1.0 #concrete compressive strength
+fcm=78.0*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
