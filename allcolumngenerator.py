@@ -4,9 +4,10 @@ import regionToolset
 import math
 import numpy as np
 
-perfectstep=1 #only one of these can be 1
+perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
 shape='Square' #Square or Circular
 e=0.0 #load eccentricity
@@ -53,6 +54,8 @@ ecu1=0.001*min(3.5,2.8+27*((98-fcm)/float(100))**4)
 Ecm=1000*(22*(fcm/10)**0.3)
 conc_denst=2.5e-9
 conc_poisson=0.2
+
+meshsize=30.0
 
 if fcm<58:
     fctm=0.3*(fcm-8)**(2.0/3)
@@ -398,28 +401,93 @@ import mesh
 region_profile_mesh=(f,)
 elem_type_profile=mesh.ElemType(elemCode=S4R, elemLibrary=EXPLICIT, secondOrderAccuracy=OFF, hourglassControl=DEFAULT)
 beam_part.setElementType(regions=region_profile_mesh, elemTypes=(elem_type_profile, ))
-beam_part.seedPart(size=30.0, deviationFactor=0.1, minSizeFactor=0.1)
+beam_part.seedPart(size=meshsize, deviationFactor=0.1, minSizeFactor=0.1)
 beam_part.generateMesh()
 
 region_concrete_mesh=(concrete_part.cells,)
 elem_type_concrete=mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT, kinematicSplit=AVERAGE_STRAIN, secondOrderAccuracy=OFF, hourglassControl=DEFAULT, distortionControl=DEFAULT)
 concrete_part.setElementType(regions=region_concrete_mesh, elemTypes=(elem_type_concrete, ))
-concrete_part.seedPart(size=30.0, deviationFactor=0.1, minSizeFactor=0.1)
+concrete_part.seedPart(size=meshsize, deviationFactor=0.1, minSizeFactor=0.1)
 concrete_part.generateMesh()
 
 region_stirrups_mesh=(column_model.parts['Stirrups'].edges,)
 elem_type_bars=mesh.ElemType(elemCode=B31, elemLibrary=EXPLICIT)
 column_model.parts['Stirrups'].setElementType(regions=region_stirrups_mesh, elemTypes=(elem_type_bars, ))
-column_model.parts['Stirrups'].seedPart(size=30.0, deviationFactor=0.1, minSizeFactor=0.1)
+column_model.parts['Stirrups'].seedPart(size=meshsize, deviationFactor=0.1, minSizeFactor=0.1)
 column_model.parts['Stirrups'].generateMesh()
 
 region_lrebars_mesh=(column_model.parts['Lrebars'].edges,)
 elem_type_bars=mesh.ElemType(elemCode=B31, elemLibrary=EXPLICIT)
 column_model.parts['Lrebars'].setElementType(regions=region_lrebars_mesh, elemTypes=(elem_type_bars, ))
-column_model.parts['Lrebars'].seedPart(size=30.0, deviationFactor=0.1, minSizeFactor=0.1)
+column_model.parts['Lrebars'].seedPart(size=meshsize, deviationFactor=0.1, minSizeFactor=0.1)
 column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
+
+if resstrstep==1:
+    #fy=100.0
+    #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-tf)/2,0),center2=(b/2-15,(h-tf)/2,40),radius =20)
+    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2, yMax=(h-tf)/2, zMin=0, zMax=40)
+
+    fl_mesh_a=meshsize
+    for i in range(4):
+	    #c1=el[0].getElemEdges()[i].getNodes()[0].coordinates
+	    #c2=el[0].getElemEdges()[i].getNodes()[1].coordinates
+	    #d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+	    #if d != fl_mesh_a:
+	    #	fl_mesh_a = d
+	    #	break
+
+        z1=el[0].getElemEdges()[i].getNodes()[0].coordinates[2]
+        z2=el[0].getElemEdges()[i].getNodes()[1].coordinates[2]
+        x1=el[0].getElemEdges()[i].getNodes()[0].coordinates[0]
+        x2=el[0].getElemEdges()[i].getNodes()[1].coordinates[0]
+        
+        if z1==z2:
+            fl_mesh_a= abs(x1-x2)
+            break
+
+    #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,0,0),center2=(0,0,40),radius =40)
+    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=0, yMin=-h/2, yMax=h/2, zMin=0, zMax=40)
+
+    wb_mesh_a=meshsize
+    for i in range(4):
+        #c1=el[0].getElemEdges()[i].getNodes()[0].coordinates
+        #c2=el[0].getElemEdges()[i].getNodes()[1].coordinates
+        #d=sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2+(c1[2]-c2[2])**2)
+        #if d != wb_mesh_a:
+        #	wb_mesh_a = d
+        #	break
+
+        z1=el[0].getElemEdges()[i].getNodes()[0].coordinates[2]
+        z2=el[0].getElemEdges()[i].getNodes()[1].coordinates[2]
+        y1=el[0].getElemEdges()[i].getNodes()[0].coordinates[1]
+        y2=el[0].getElemEdges()[i].getNodes()[1].coordinates[1]
+        
+        if z1==z2:
+            wb_mesh_a= abs(y1-y2)
+            break
+
+    nef=round(b/fl_mesh_a) #no of elements in the width of flange
+    ned=round((h-tf)/wb_mesh_a) #no of elements in the depth of web
+
+    import regionToolset
+
+    column_model.parts['Beam'].MaterialOrientation( additionalRotationField='', additionalRotationType=ROTATION_ANGLE, angle=90.0, axis=AXIS_1, fieldName='', localCsys=None, orientationType=SYSTEM, region=regionToolset.Region(faces=column_model.parts['Beam'].faces))
+
+    for i in range(int(ned)):
+        y=-1*((h-tf)/2-wb_mesh_a/2)+i*wb_mesh_a
+        el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,y,0),center2=(0,y,L),radius =wb_mesh_a/2+1)
+        column_model.parts['Beam'].Set(elements= el, name='W_Set_y='+str(int(y)))
+        column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'W_Set_y='+str(int(y)), region=column_model.rootAssembly.instances['Profile Instance'].sets['W_Set_y='+str(int(y))], sigma11=-0.5*fy+abs(y)*fy/((h-tf)/2), sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
+
+    for i in range(int(nef)):
+        x=-1*(b/2-fl_mesh_a/2)+i*fl_mesh_a
+        el1 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,(h-tf)/2,0),center2=(x,(h-tf)/2,L),radius =fl_mesh_a/2+1)
+        el2 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,-1*(h-tf)/2,0),center2=(x,-1*(h-tf)/2,L),radius =fl_mesh_a/2+1)
+        column_model.parts['Beam'].Set(elements= el1+el2, name='FL_Set_x='+str(int(x)))
+        column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'FL_Set_x='+str(int(x)), region=column_model.rootAssembly.instances['Profile Instance'].sets['FL_Set_x='+str(int(x))], sigma11=0.5*fy-abs(x)*fy/(b/2), sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
+	
 
 if bucklestep==1:
     mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
