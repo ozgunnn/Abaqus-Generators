@@ -4,33 +4,34 @@ import regionToolset
 import math
 import numpy as np
 
+name='v123'
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
 shape='Square' #Square or Circular
-e=0.0 #load eccentricity
-ez=50.0 #rp distance from edge
-tf=16.0 #flange thickness
-tw=9.5 #web thickness
-h=220.0 #section depth
+e=100.0 #load eccentricity
+ez=230.0 #rp distance from edge
+tf=11.0 #flange thickness
+tw=6.5 #web thickness
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
-b=220.0 #section width
-d=350.0 #concrete width/depth
+b=120.0 #section width
+h=120.0 #section depth
+d=280.0 #concrete width/depth
 cc=20.0  #clear cover
-L=3000.0 #extrude length (half length)
+L=1500.0 #extrude length (half length)
 nocores=6
 #
-lrd=20.0 #longitudinal rebar diameter
-nr=16 #number of lrebars
-std=8.0 #stirrup diameter
-sts=100.0 #stirrup spacing
-fs=700.0*1.0 #rebaryield
-fy=460.0*1.0 #profileyield
-fcm=78.0*1.0 #concrete compressive strength
+lrd=28.0 #longitudinal rebar diameter
+nr=4 #number of lrebars
+std=6.0 #stirrup diameter
+sts=160.0 #stirrup spacing
+fs=420.0*1.0 #rebaryield
+fy=240.0*1.0 #profileyield
+fcm=40.1*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -122,7 +123,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
