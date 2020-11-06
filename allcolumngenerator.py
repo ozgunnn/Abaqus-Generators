@@ -4,9 +4,9 @@ import regionToolset
 import math
 import numpy as np
 
-perfectstep=0 #only one of these can be 1
+perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 axis='Strong'  #Strong or Weak
 shape='Square' #Square or Circular
 e=0.0 #load eccentricity

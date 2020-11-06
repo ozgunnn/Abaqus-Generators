@@ -1,3 +1,4 @@
+#fy=100.0
 #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-tf)/2,0),center2=(b/2-15,(h-tf)/2,40),radius =20)
 el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2, yMax=(h-tf)/2, zMin=0, zMax=40)
 
@@ -51,12 +52,12 @@ for i in range(int(ned)):
 	y=-1*((h-tf)/2-wb_mesh_a/2)+i*wb_mesh_a
 	el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(0,y,0),center2=(0,y,L),radius =wb_mesh_a/2+1)
 	column_model.parts['Beam'].Set(elements= el, name='W_Set_y='+str(int(y)))
-	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'W_Set_y='+str(int(y)), region=column_model.rootAssembly.instances['Profile Instance'].sets['W_Set_y='+str(int(y))], sigma11=100.0, sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
+	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'W_Set_y='+str(int(y)), region=column_model.rootAssembly.instances['Profile Instance'].sets['W_Set_y='+str(int(y))], sigma11=-0.5*fy+abs(y)*fy/((h-tf)/2), sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
 
 for i in range(int(nef)):
 	x=-1*(b/2-fl_mesh_a/2)+i*fl_mesh_a
 	el1 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,(h-tf)/2,0),center2=(x,(h-tf)/2,L),radius =fl_mesh_a/2+1)
 	el2 = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(x,-1*(h-tf)/2,0),center2=(x,-1*(h-tf)/2,L),radius =fl_mesh_a/2+1)
 	column_model.parts['Beam'].Set(elements= el1+el2, name='FL_Set_x='+str(int(x)))
-	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'FL_Set_x='+str(int(x)), region=column_model.rootAssembly.instances['Profile Instance'].sets['FL_Set_x='+str(int(x))], sigma11=100.0, sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
+	column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'FL_Set_x='+str(int(x)), region=column_model.rootAssembly.instances['Profile Instance'].sets['FL_Set_x='+str(int(x))], sigma11=0.5*fy-abs(x)*fy/(b/2), sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
 	
