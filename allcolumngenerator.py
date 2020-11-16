@@ -4,7 +4,7 @@ import regionToolset
 import math
 import numpy as np
 
-name='v123'
+#name='v123'
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
@@ -31,7 +31,7 @@ std=6.0 #stirrup diameter
 sts=160.0 #stirrup spacing
 fs=420.0*1.0 #rebaryield
 fy=240.0*1.0 #profileyield
-fcm=40.1*1.0 #concrete compressive strength
+fcm=130.1*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -123,7 +123,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
