@@ -29,8 +29,8 @@ lrd=20.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=8.0 #stirrup diameter
 sts=180.0 #stirrup spacing
-fs=500.0*1.0 #rebaryield
-fy=355.0*1.0 #profileyield
+fs=500.0*1.1 #rebaryield
+fy=355.0*1.05 #profileyield
 fcm=58.1*1.0 #concrete compressive strength
 #
 
