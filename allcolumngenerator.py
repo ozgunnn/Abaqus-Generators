@@ -8,7 +8,7 @@ import numpy as np
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
-resstrstep=1 #switch, 1 or 0 regardless of others
+resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Weak'  #Strong or Weak
 shape='Square' #Square or Circular
 e=0.0 #load eccentricity
