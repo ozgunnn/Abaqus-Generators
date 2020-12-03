@@ -3,6 +3,7 @@ from abaqusConstants import *
 import regionToolset
 import math
 import numpy as np
+import copy
 
 #name='allc90'
 perfectstep=0 #only one of these can be 1
@@ -31,7 +32,7 @@ std=8.0 #stirrup diameter
 sts=100.0 #stirrup spacing
 fs=700.0*1.0 #rebaryield x1.1 for mean
 fy=550.0*1.00 #profileyield x1.05 for mean
-fcm=98.0*1.0 #concrete compressive strength
+fcm=58.0*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -114,8 +115,9 @@ table_st_fin=tuple(map(tuple, table_st_eps))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 i=0
+a=copy.deepcopy(cuttab[0][1])
 while i in range(len(cuttab[:,1])):
-    cuttab[i][1]=(cuttab[i][1]-cuttab[0][1])
+    cuttab[i][1]=(cuttab[i][1]-a)
     i=i+1
     
 cctab=tuple(map(tuple, cuttab))
