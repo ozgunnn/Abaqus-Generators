@@ -9,29 +9,29 @@ import copy
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
-resstrstep=1 #switch, 1 or 0 regardless of others
-axis='Strong'  #Strong or Weak
+resstrstep=0 #switch, 1 or 0 regardless of others
+axis='Weak'  #Strong or Weak
 shape='Square' #Square or Circular
-e=17.5 #load eccentricity
+e=0.0 #load eccentricity
 ez=200.0 #rp distance from edge
-tf=16.0 #flange thickness
-tw=9.5 #web thickness
+tf=18.0 #flange thickness
+tw=10.5 #web thickness
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
-b=220.0 #section width
-h=220.0 #section depth
-d=350.0 #concrete width/depth
-cc=20.0  #clear cover
+b=280.0 #section width
+h=280.0 #section depth
+d=400.0 #concrete width/depth
+cc=30.0  #clear cover
 L=2000.0 #extrude length (half length)
 nocores=6
 #
 lrd=20.0 #longitudinal rebar diameter
-nr=16 #number of lrebars
+nr=8 #number of lrebars
 std=8.0 #stirrup diameter
-sts=100.0 #stirrup spacing
-fs=700.0*1.0 #rebaryield x1.1 for mean
-fy=550.0*1.00 #profileyield x1.05 for mean
+sts=180.0 #stirrup spacing
+fs=500.0*1.077 #rebaryield x1.1 for mean
+fy=355.0*1.20 #profileyield x1.05 for mean
 fcm=58.0*1.0 #concrete compressive strength
 #
 
