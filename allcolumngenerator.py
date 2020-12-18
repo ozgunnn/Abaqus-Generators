@@ -11,8 +11,8 @@ bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
-shape='Square' #Square or Circular
-e=0.0 #load eccentricity
+shape='Circular' #Square or Circular
+e=35.0 #load eccentricity
 ez=50.0 #rp distance from edge
 
 t=10.0 #analysis time
@@ -24,19 +24,19 @@ h=160.0 #section depth
 tf=13.0 #flange thickness
 tw=8.0 #web thickness
 
-d=300.0 #concrete width/depth
+d=307.9 #concrete width/depth
 cc=20.0  #clear cover
 
 L=3000.0 #extrude length (half length)
 nocores=6
 #
-lrd=16.0 #longitudinal rebar diameter
+lrd=14.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=8.0 #stirrup diameter
-sts=100.0 #stirrup spacing
-fs=500.0*1.0 #rebaryield x1.077 for mean
-fy=460.0*1.0 #profileyield x1.20 for mean
-fcm=58.0*1.0 #concrete compressive strength
+sts=200.0 #stirrup spacing
+fs=500.0*1.077 #rebaryield x1.077 for mean
+fy=550.0*1.1 #profileyield x1.20 for mean
+fcm=130.0*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
