@@ -9,34 +9,34 @@ import copy
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
-resstrstep=1 #switch, 1 or 0 regardless of others
+resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
-shape='Circular' #Square or Circular
-e=35.0 #load eccentricity
-ez=50.0 #rp distance from edge
+shape='Square' #Square or Circular
+e=0.0 #load eccentricity
+ez=10.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=160.0 #section width
-h=160.0 #section depth
-tf=13.0 #flange thickness
-tw=8.0 #web thickness
+b=280.0 #section width
+h=280.0 #section depth
+tf=18.0 #flange thickness
+tw=10.5 #web thickness
 
-d=307.9 #concrete width/depth
-cc=20.0  #clear cover
+d=300.0 #concrete width/depth
+cc=42.0  #clear cover
 
-L=3000.0 #extrude length (half length)
+L=500.0 #extrude length (half length)
 nocores=6
 #
-lrd=14.0 #longitudinal rebar diameter
-nr=8 #number of lrebars
+lrd=20.0 #longitudinal rebar diameter
+nr=4 #number of lrebars
 std=8.0 #stirrup diameter
-sts=200.0 #stirrup spacing
+sts=100.0 #stirrup spacing
 fs=500.0*1.077 #rebaryield x1.077 for mean
-fy=550.0*1.1 #profileyield x1.20 for mean
-fcm=130.0*1.0 #concrete compressive strength
+fy=355.0*1.2 #profileyield x1.20 for mean
+fcm=58.0*1.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
