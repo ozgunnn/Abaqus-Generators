@@ -7,9 +7,9 @@ import copy
 
 #name='C11'
 perfectstep=0 #only one of these can be 1
-bucklestep=1 #only one of these can be 1
-geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
-resstrstep=0 #switch, 1 or 0 regardless of others
+bucklestep=0 #only one of these can be 1
+geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Weak'  #Strong or Weak
 shape='Rect' #Circular or Rect
 e=100.0 #load eccentricity
@@ -38,8 +38,8 @@ lrd=20.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=10.0 #stirrup diameter
 sts=100.0 #stirrup spacing
-fs=500.0 #rebaryield x1.077 for mean
-fy=540.0 #profileyield x1.20 for mean
+fs=540.0 #rebaryield x1.077 for mean
+fy=426.0 #profileyield x1.20 for mean
 fcm=58.0 #concrete compressive strength
 #
 
