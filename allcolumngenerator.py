@@ -5,42 +5,42 @@ import math
 import numpy as np
 import copy
 
-#name='allc90'
+#name='C11'
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
-axis='Weak'  #Strong or Weak
+axis='Strong'  #Strong or Weak
 shape='Rect' #Circular or Rect
-e=0.0 #load eccentricity
-ez=252.5 #rp distance from edge
+e=120.0 #load eccentricity
+ez=860.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=100.0 #section width
-h=100.0 #section depth
-tf=10.0 #flange thickness
-tw=6.0 #web thickness
+b=150.0 #section width
+h=150.0 #section depth
+tf=15.0 #flange thickness
+tw=15.0 #web thickness
 
 d=240.0 #concrete diameter (if circular)
 
-bc=300 #concrete width (if rectangle)
-hc=200 #concrete depth (if rectangle)
+bc=260 #concrete width (if rectangle)
+hc=260 #concrete depth (if rectangle)
 
 cc=20.0  #clear cover
 
-L=1400.0 #extrude length (half length)
-nocores=6
+L=900.0 #extrude length (half length)
+nocores=2
 #
 lrd=13.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=10.0 #stirrup diameter
-sts=100.0 #stirrup spacing
-fs=520.0 #rebaryield x1.077 for mean
-fy=380.0 #profileyield x1.20 for mean
-fcm=96.0 #concrete compressive strength
+sts=65.0 #stirrup spacing
+fs=512.0 #rebaryield x1.077 for mean
+fy=812.0 #profileyield x1.20 for mean
+fcm=104.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -439,7 +439,7 @@ session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 if resstrstep==1:
     #fy=100.0
     #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-tf)/2,0),center2=(b/2-15,(h-tf)/2,40),radius =20)
-    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2, yMax=(h-tf)/2, zMin=0, zMax=40)
+    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2-1, yMax=(h-tf)/2+1, zMin=0, zMax=40)
 
     fl_mesh_a=meshsize
     for i in range(4):
