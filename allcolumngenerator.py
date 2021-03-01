@@ -9,34 +9,38 @@ import copy
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
-resstrstep=0 #switch, 1 or 0 regardless of others
-axis='Strong'  #Strong or Weak
-shape='Square' #Square or Circular
+resstrstep=1 #switch, 1 or 0 regardless of others
+axis='Weak'  #Strong or Weak
+shape='Rect' #Circular or Rect
 e=0.0 #load eccentricity
-ez=10.0 #rp distance from edge
+ez=252.5 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=280.0 #section width
-h=280.0 #section depth
-tf=18.0 #flange thickness
-tw=10.5 #web thickness
+b=100.0 #section width
+h=100.0 #section depth
+tf=10.0 #flange thickness
+tw=6.0 #web thickness
 
-d=300.0 #concrete width/depth
-cc=42.0  #clear cover
+d=240.0 #concrete diameter (if circular)
 
-L=500.0 #extrude length (half length)
+bc=300 #concrete width (if rectangle)
+hc=200 #concrete depth (if rectangle)
+
+cc=20.0  #clear cover
+
+L=1400.0 #extrude length (half length)
 nocores=6
 #
-lrd=20.0 #longitudinal rebar diameter
-nr=4 #number of lrebars
-std=8.0 #stirrup diameter
+lrd=13.0 #longitudinal rebar diameter
+nr=8 #number of lrebars
+std=10.0 #stirrup diameter
 sts=100.0 #stirrup spacing
-fs=500.0*1.077 #rebaryield x1.077 for mean
-fy=355.0*1.2 #profileyield x1.20 for mean
-fcm=58.0*1.0 #concrete compressive strength
+fs=520.0 #rebaryield x1.077 for mean
+fy=380.0 #profileyield x1.20 for mean
+fcm=96.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -175,8 +179,8 @@ concrete_sketch.Line(point1=(-tw/2,(h/2-tf)),point2=(-b/2,(h/2-tf)))
 concrete_sketch.Line(point1=(-b/2,(h/2-tf)),point2=(-b/2,h/2))
 concrete_sketch.Line(point1=(-b/2,h/2),point2=(b/2,h/2))
 
-if shape == "Square":
-    concrete_sketch.rectangle(point1=(d/2, d/2), point2=(-d/2, -d/2))
+if shape == "Rect":
+    concrete_sketch.rectangle(point1=(bc/2, hc/2), point2=(-bc/2, -hc/2))
 elif shape == "Circular":
     concrete_sketch.CircleByCenterPerimeter((0,0),(0,d/2))
 
@@ -207,8 +211,8 @@ rebar_part=column_model.Part(name='Rebar',dimensionality=THREE_D,type=DEFORMABLE
 rebar_part.BaseWire(sketch=rebar_sketch)
 
 stirrup_sketch=column_model.ConstrainedSketch(name='rebar',sheetSize=160)
-if shape=="Square":
-    stirrup_sketch.rectangle((d/2-cc-std/2,d/2-cc-std/2),(-(d/2-cc-std/2),-(d/2-cc-std/2)))
+if shape=="Rect":
+    stirrup_sketch.rectangle((bc/2-cc-std/2,hc/2-cc-std/2),(-(bc/2-cc-std/2),-(hc/2-cc-std/2)))
 elif shape=="Circular":
     stirrup_sketch.CircleByCenterPerimeter((0,0),(0,d/2-cc-std/2))
 stirrup_part=column_model.Part(name='Stirrup',dimensionality=THREE_D,type=DEFORMABLE_BODY)
@@ -220,7 +224,7 @@ column_model.HomogeneousShellSection(name='sec_flange', preIntegrate=OFF, materi
 column_model.HomogeneousShellSection(name='sec_web', preIntegrate=OFF, material='mat_profile', thicknessType=UNIFORM, thickness=tw, thicknessField='', nodalThicknessField='', idealization=NO_IDEALIZATION, poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, useDensity=OFF,integrationRule=SIMPSON, numIntPts=5)
 
 f=beam_part.faces
-if shape=="Square":
+if shape=="Rect":
     faces_fl=f.findAt(((b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,-(h/2.0-tf/2.0),L/4),),((b/4.0,-(h/2.0-tf/2.0),L/4),))
 elif shape=="Circular":
     faces_fl=f.findAt(((b/4,h/2-tf/2,L/4),),((-b/4,h/2-tf/2,L/4),),((-b/4,-(h/2-tf/2),L/4),),((b/4,-(h/2-tf/2),L/4),))
@@ -253,7 +257,7 @@ columnAssembly=column_model.rootAssembly
 concreteInstance=columnAssembly.Instance(name='Concrete Instance',part=concrete_part,dependent=ON)
 profileInstance=columnAssembly.Instance(name='Profile Instance',part=beam_part,dependent=ON)
 
-if shape=="Square":
+if shape=="Rect":
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance',part=rebar_part,dependent=ON)
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance1',part=rebar_part,dependent=ON)
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance2',part=rebar_part,dependent=ON)
@@ -264,23 +268,23 @@ elif shape=="Circular":
 stirrupInstance=columnAssembly.Instance(name='Stirrup Instance',part=stirrup_part,dependent=ON)
 columnAssembly.regenerate()
 
-if shape=="Square":
+if shape=="Rect":
     columnAssembly.rotate(instanceList=('Lrebar Instance', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance1', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance2', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance3', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
 
-    columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(d/2-cc-std-lrd/2, d/2-cc-std-lrd/2, 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance1', ), vector=(d/2-cc-std-lrd/2, -(d/2-cc-std-lrd/2), 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance2', ), vector=(-d/2+cc+std+lrd/2, -d/2+cc+std+lrd/2, 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance3', ), vector=(-d/2+cc+std+lrd/2, d/2-cc-std-lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(bc/2-cc-std-lrd/2, hc/2-cc-std-lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance1', ), vector=(bc/2-cc-std-lrd/2, -(hc/2-cc-std-lrd/2), 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance2', ), vector=(-bc/2+cc+std+lrd/2, -hc/2+cc+std+lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance3', ), vector=(-bc/2+cc+std+lrd/2, hc/2-cc-std-lrd/2, 0.0))
 
     columnAssembly.translate(instanceList=('Stirrup Instance', ), vector=(0.0, 0.0, sts/2))
 
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance', ), direction1=(0.0, -1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance1', ), direction1=(-1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance2', ), direction1=(0.0, 1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance3', ), direction1=(1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance', ), direction1=(0.0, -1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(hc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance1', ), direction1=(-1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(bc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance2', ), direction1=(0.0, 1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(hc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance3', ), direction1=(1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(bc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
 
     columnAssembly.LinearInstancePattern(instanceList=('Stirrup Instance', ), direction1=(0.0, 0.0, 1.0), direction2=(0.0, 1.0, 0.0), number1=int((L-sts/2)/sts)+1, number2=1, spacing1=sts, spacing2=sts)
 
