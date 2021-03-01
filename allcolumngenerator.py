@@ -7,40 +7,40 @@ import copy
 
 #name='C11'
 perfectstep=0 #only one of these can be 1
-bucklestep=0 #only one of these can be 1
-geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
-resstrstep=1 #switch, 1 or 0 regardless of others
-axis='Strong'  #Strong or Weak
+bucklestep=1 #only one of these can be 1
+geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
+resstrstep=0 #switch, 1 or 0 regardless of others
+axis='Weak'  #Strong or Weak
 shape='Rect' #Circular or Rect
-e=120.0 #load eccentricity
-ez=860.0 #rp distance from edge
+e=100.0 #load eccentricity
+ez=0.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=150.0 #section width
-h=150.0 #section depth
-tf=15.0 #flange thickness
-tw=15.0 #web thickness
+b=280.0 #section width
+h=280.0 #section depth
+tf=18.0 #flange thickness
+tw=10.5 #web thickness
 
 d=240.0 #concrete diameter (if circular)
 
-bc=260 #concrete width (if rectangle)
-hc=260 #concrete depth (if rectangle)
+bc=400 #concrete width (if rectangle)
+hc=400 #concrete depth (if rectangle)
 
 cc=20.0  #clear cover
 
-L=900.0 #extrude length (half length)
+L=2000.0 #extrude length (half length)
 nocores=2
 #
-lrd=13.0 #longitudinal rebar diameter
+lrd=20.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=10.0 #stirrup diameter
-sts=65.0 #stirrup spacing
-fs=512.0 #rebaryield x1.077 for mean
-fy=812.0 #profileyield x1.20 for mean
-fcm=104.0 #concrete compressive strength
+sts=100.0 #stirrup spacing
+fs=500.0 #rebaryield x1.077 for mean
+fy=540.0 #profileyield x1.20 for mean
+fcm=58.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
