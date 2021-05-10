@@ -5,42 +5,42 @@ import math
 import numpy as np
 import copy
 
-#name='C11'
+name='R500_EC2'
 perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Weak'  #Strong or Weak
 shape='Rect' #Circular or Rect
-e=100.0 #load eccentricity
+e=20.0 #load eccentricity
 ez=0.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=280.0 #section width
-h=280.0 #section depth
-tf=18.0 #flange thickness
-tw=10.5 #web thickness
+b=240.0 #section width
+h=240.0 #section depth
+tf=17.0 #flange thickness
+tw=10.0 #web thickness
 
-d=240.0 #concrete diameter (if circular)
+d=500.0 #concrete diameter (if circular)
 
-bc=400 #concrete width (if rectangle)
-hc=400 #concrete depth (if rectangle)
+bc=500.0 #concrete width (if rectangle)
+hc=500.0 #concrete depth (if rectangle)
 
 cc=20.0  #clear cover
 
-L=2000.0 #extrude length (half length)
+L=3000.0 #extrude length (half length)
 nocores=2
 #
-lrd=20.0 #longitudinal rebar diameter
+lrd=16.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=10.0 #stirrup diameter
 sts=100.0 #stirrup spacing
-fs=540.0 #rebaryield x1.077 for mean
-fy=235.0 #profileyield x1.20 for mean
-fcm=58.0 #concrete compressive strength
+fs=500.0 #rebaryield x1.077 for mean
+fy=460.0 #profileyield x1.20 for mean
+fcm=50.0 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -133,7 +133,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
@@ -435,7 +435,7 @@ column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 
-#fy=fy*1.2 uncomment when defining the residual stresses based on means
+fy=235.0 #comment when defining the residual stresses based on strengths
 if resstrstep==1:
     #fy=100.0
     #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-tf)/2,0),center2=(b/2-15,(h-tf)/2,40),radius =20)
