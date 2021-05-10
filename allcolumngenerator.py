@@ -5,28 +5,28 @@ import math
 import numpy as np
 import copy
 
-name='R500_EC2'
-perfectstep=1 #only one of these can be 1
-bucklestep=0 #only one of these can be 1
+name='S_A_1m' #comment when default name is used
+perfectstep=0 #only one of these can be 1
+bucklestep=1 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
-resstrstep=1 #switch, 1 or 0 regardless of others
+resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Weak'  #Strong or Weak
 shape='Rect' #Circular or Rect
-e=20.0 #load eccentricity
+e=0.0 #load eccentricity
 ez=0.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=240.0 #section width
-h=240.0 #section depth
-tf=17.0 #flange thickness
+b=260.0 #section width
+h=260.0 #section depth
+tf=17.5 #flange thickness
 tw=10.0 #web thickness
 
 d=500.0 #concrete diameter (if circular)
 
-bc=500.0 #concrete width (if rectangle)
+bc=400.0 #concrete width (if rectangle)
 hc=500.0 #concrete depth (if rectangle)
 
 cc=20.0  #clear cover
