@@ -5,10 +5,10 @@ import math
 import numpy as np
 import copy
 
-for iii in range(10):
-    name='B2_'+str(iii+1)+'m'
-    fs=700.0 #rebaryield x1.077 for mean
-    fcm=70.0 #concrete compressive strength
+for iii in range(1):
+    name='B1_'+str(iii+12)+'m'
+    fs=500.0 #rebaryield x1.077 for mean
+    fcm=50.0 #concrete compressive strength
     shape='Circular' #Circular or Rect
 
     perfectstep=0 #only one of these can be 1
@@ -38,7 +38,7 @@ for iii in range(10):
     cc=18.0  #clear cover
 
     #L=3000.0 #extrude length (half length)
-    L=1000*(iii+1)/2
+    L=1000*(iii+12)/2
     nocores=2
     #
     lrd=20.0 #longitudinal rebar diameter
