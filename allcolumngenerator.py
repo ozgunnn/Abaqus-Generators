@@ -5,15 +5,15 @@ import math
 import numpy as np
 import copy
 
-name='A11' #comment when default name is used
+name='B14' #comment when default name is used
 perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
-axis='Weak'  #Strong or Weak
-shape='Circular' #Circular or Rect
-e=0.0 #load eccentricity
-ez=0.0 #rp distance from edge
+axis='Strong'  #Strong or Weak
+shape='Rect' #Circular or Rect
+e=15.0 #load eccentricity
+ez=350.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
@@ -26,21 +26,21 @@ tw=8.0 #web thickness
 
 d=350.0 #concrete diameter (if circular)
 
-bc=400.0 #concrete width (if rectangle)
-hc=500.0 #concrete depth (if rectangle)
+bc=300.0 #concrete width (if rectangle)
+hc=300.0 #concrete depth (if rectangle)
 
 cc=20.0  #clear cover
 
 L=3000.0 #extrude length (half length)
-nocores=4
+nocores=1
 #
-lrd=16.0 #longitudinal rebar diameter
-nr=8 #number of lrebars
+lrd=20.0 #longitudinal rebar diameter
+nr=12 #number of lrebars
 std=10.0 #stirrup diameter
 sts=75.0 #stirrup spacing
 fs=500.0*1.1 #rebaryield x1.077 for mean
 fy=525.0*1.1 #profileyield x1.20 for mean
-fcm=50.0*1.3 #concrete compressive strength
+fcm=100.0*1.3 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
