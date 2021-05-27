@@ -5,13 +5,13 @@ import math
 import numpy as np
 import copy
 
-name='S_A_1m' #comment when default name is used
+name='A11' #comment when default name is used
 perfectstep=0 #only one of these can be 1
-bucklestep=1 #only one of these can be 1
-geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
-resstrstep=0 #switch, 1 or 0 regardless of others
+bucklestep=0 #only one of these can be 1
+geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Weak'  #Strong or Weak
-shape='Rect' #Circular or Rect
+shape='Circular' #Circular or Rect
 e=0.0 #load eccentricity
 ez=0.0 #rp distance from edge
 
@@ -19,12 +19,12 @@ t=10.0 #analysis time
 ms=100 #mass scale
 u=10.0 #assigned deformation
 
-b=260.0 #section width
-h=260.0 #section depth
-tf=17.5 #flange thickness
-tw=10.0 #web thickness
+b=160.0 #section width
+h=160.0 #section depth
+tf=13.0 #flange thickness
+tw=8.0 #web thickness
 
-d=500.0 #concrete diameter (if circular)
+d=350.0 #concrete diameter (if circular)
 
 bc=400.0 #concrete width (if rectangle)
 hc=500.0 #concrete depth (if rectangle)
@@ -32,15 +32,15 @@ hc=500.0 #concrete depth (if rectangle)
 cc=20.0  #clear cover
 
 L=3000.0 #extrude length (half length)
-nocores=2
+nocores=4
 #
 lrd=16.0 #longitudinal rebar diameter
 nr=8 #number of lrebars
 std=10.0 #stirrup diameter
-sts=100.0 #stirrup spacing
-fs=500.0 #rebaryield x1.077 for mean
-fy=460.0 #profileyield x1.20 for mean
-fcm=50.0 #concrete compressive strength
+sts=75.0 #stirrup spacing
+fs=500.0*1.1 #rebaryield x1.077 for mean
+fy=525.0*1.1 #profileyield x1.20 for mean
+fcm=50.0*1.3 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -404,7 +404,7 @@ if bucklestep==1:
     column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=UNSET, ur1=UNSET, ur2=UNSET, ur3=0, fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
     column_model.ConcentratedForce(cf3=1.0, createStepName='Step-1', distributionType=UNIFORM, field='', localCsys=None , name='Load-1', region=(r1,), )
 else:
-    column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
+    column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=0, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
     column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
 
 import mesh 
