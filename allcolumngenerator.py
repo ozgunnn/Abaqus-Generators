@@ -5,13 +5,13 @@ import math
 import numpy as np
 import copy
 
-name='B14_over' #comment when default name is used
-perfectstep=1 #only one of these can be 1
+#name='B14_over' #comment when default name is used
+perfectstep=0 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
-shape='Rect' #Circular or Rect
+shape='Circular' #Circular or Rect
 e=15.0 #load eccentricity
 ez=350.0 #rp distance from edge
 
@@ -133,7 +133,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
