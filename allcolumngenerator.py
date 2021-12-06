@@ -5,10 +5,10 @@ import math
 import numpy as np
 import copy
 
-name='B14' #comment when default name is used
-perfectstep=0 #only one of these can be 1
+name='B14_over' #comment when default name is used
+perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
 shape='Rect' #Circular or Rect
@@ -32,15 +32,15 @@ hc=300.0 #concrete depth (if rectangle)
 cc=20.0  #clear cover
 
 L=3000.0 #extrude length (half length)
-nocores=1
+nocores=6
 #
 lrd=20.0 #longitudinal rebar diameter
 nr=12 #number of lrebars
 std=10.0 #stirrup diameter
 sts=75.0 #stirrup spacing
 fs=500.0*1.0 #rebaryield x1.077 for mean
-fy=525.0*1.0 #profileyield x1.20 for mean
-fcm=50.0*1.0 #concrete compressive strength
+fy=365.0*1.0 #profileyield x1.20 for mean
+fcm=100.0*1.3 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
