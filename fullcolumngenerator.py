@@ -5,15 +5,15 @@ import math
 import numpy as np
 import copy
 
-name='allc90'  #comment when default name is used , line 136
+name='A15'  #comment when default name is used , line 136
 perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
 shape='Circular' #Circular or Rect
-e=35.0 #load eccentricity
-ez=50.0 #rp distance from edge
+e=36.8 #load eccentricity
+ez=25.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
@@ -34,13 +34,13 @@ cc=20.0  #clear cover
 L=6000.0 #extrude length (full length)
 nocores=6
 #
-lrd=14.0 #longitudinal rebar diameter
-nr=8 #number of lrebars
-std=8.0 #stirrup diameter
-sts=100.0 #stirrup spacing
+lrd=20.0 #longitudinal rebar diameter
+nr=12 #number of lrebars
+std=10.0 #stirrup diameter
+sts=75.0 #stirrup spacing
 fs=500.0 #rebaryield 
-fy=550.0 #profileyield 
-fcm=130.0 #concrete compressive strength
+fy=525.0 #profileyield 
+fcm=59.5 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
