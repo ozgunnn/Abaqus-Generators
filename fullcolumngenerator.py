@@ -5,13 +5,13 @@ import math
 import numpy as np
 import copy
 
-#name='allc90'
+name='allc90'  #comment when default name is used , line 136
 perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
-shape='Circular' #Square or Circular
+shape='Circular' #Circular or Rect
 e=35.0 #load eccentricity
 ez=50.0 #rp distance from edge
 
@@ -24,7 +24,11 @@ h=160.0 #section depth
 tf=13.0 #flange thickness
 tw=8.0 #web thickness
 
-d=350.0 #concrete width/depth
+d=350.0 #concrete diameter (if circular)
+
+bc=300.0 #concrete width (if rectangle)
+hc=300.0 #concrete depth (if rectangle)
+
 cc=20.0  #clear cover
 
 L=6000.0 #extrude length (full length)
@@ -129,7 +133,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
@@ -175,8 +179,8 @@ concrete_sketch.Line(point1=(-tw/2,(h/2-tf)),point2=(-b/2,(h/2-tf)))
 concrete_sketch.Line(point1=(-b/2,(h/2-tf)),point2=(-b/2,h/2))
 concrete_sketch.Line(point1=(-b/2,h/2),point2=(b/2,h/2))
 
-if shape == "Square":
-    concrete_sketch.rectangle(point1=(d/2, d/2), point2=(-d/2, -d/2))
+if shape == "Rect":
+    concrete_sketch.rectangle(point1=(bc/2, hc/2), point2=(-bc/2, -hc/2))
 elif shape == "Circular":
     concrete_sketch.CircleByCenterPerimeter((0,0),(0,d/2))
 
@@ -207,8 +211,8 @@ rebar_part=column_model.Part(name='Rebar',dimensionality=THREE_D,type=DEFORMABLE
 rebar_part.BaseWire(sketch=rebar_sketch)
 
 stirrup_sketch=column_model.ConstrainedSketch(name='rebar',sheetSize=160)
-if shape=="Square":
-    stirrup_sketch.rectangle((d/2-cc-std/2,d/2-cc-std/2),(-(d/2-cc-std/2),-(d/2-cc-std/2)))
+if shape=="Rect":
+    stirrup_sketch.rectangle((bc/2-cc-std/2,hc/2-cc-std/2),(-(bc/2-cc-std/2),-(hc/2-cc-std/2)))
 elif shape=="Circular":
     stirrup_sketch.CircleByCenterPerimeter((0,0),(0,d/2-cc-std/2))
 stirrup_part=column_model.Part(name='Stirrup',dimensionality=THREE_D,type=DEFORMABLE_BODY)
@@ -220,7 +224,7 @@ column_model.HomogeneousShellSection(name='sec_flange', preIntegrate=OFF, materi
 column_model.HomogeneousShellSection(name='sec_web', preIntegrate=OFF, material='mat_profile', thicknessType=UNIFORM, thickness=tw, thicknessField='', nodalThicknessField='', idealization=NO_IDEALIZATION, poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, useDensity=OFF,integrationRule=SIMPSON, numIntPts=5)
 
 f=beam_part.faces
-if shape=="Square":
+if shape=="Rect":
     faces_fl=f.findAt(((b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,h/2.0-tf/2.0,L/4),),((-b/4.0,-(h/2.0-tf/2.0),L/4),),((b/4.0,-(h/2.0-tf/2.0),L/4),))
 elif shape=="Circular":
     faces_fl=f.findAt(((b/4,h/2-tf/2,L/4),),((-b/4,h/2-tf/2,L/4),),((-b/4,-(h/2-tf/2),L/4),),((b/4,-(h/2-tf/2),L/4),))
@@ -253,7 +257,7 @@ columnAssembly=column_model.rootAssembly
 concreteInstance=columnAssembly.Instance(name='Concrete Instance',part=concrete_part,dependent=ON)
 profileInstance=columnAssembly.Instance(name='Profile Instance',part=beam_part,dependent=ON)
 
-if shape=="Square":
+if shape=="Rect":
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance',part=rebar_part,dependent=ON)
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance1',part=rebar_part,dependent=ON)
     lrebarInstance=columnAssembly.Instance(name='Lrebar Instance2',part=rebar_part,dependent=ON)
@@ -264,23 +268,23 @@ elif shape=="Circular":
 stirrupInstance=columnAssembly.Instance(name='Stirrup Instance',part=stirrup_part,dependent=ON)
 columnAssembly.regenerate()
 
-if shape=="Square":
+if shape=="Rect":
     columnAssembly.rotate(instanceList=('Lrebar Instance', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance1', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance2', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
     columnAssembly.rotate(instanceList=('Lrebar Instance3', ), axisPoint=(0.0, 0.0, 0.0), axisDirection=(0.0, -1.0, 0.0), angle=90.0)
 
-    columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(d/2-cc-std-lrd/2, d/2-cc-std-lrd/2, 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance1', ), vector=(d/2-cc-std-lrd/2, -(d/2-cc-std-lrd/2), 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance2', ), vector=(-d/2+cc+std+lrd/2, -d/2+cc+std+lrd/2, 0.0))
-    columnAssembly.translate(instanceList=('Lrebar Instance3', ), vector=(-d/2+cc+std+lrd/2, d/2-cc-std-lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance', ), vector=(bc/2-cc-std-lrd/2, hc/2-cc-std-lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance1', ), vector=(bc/2-cc-std-lrd/2, -(hc/2-cc-std-lrd/2), 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance2', ), vector=(-bc/2+cc+std+lrd/2, -hc/2+cc+std+lrd/2, 0.0))
+    columnAssembly.translate(instanceList=('Lrebar Instance3', ), vector=(-bc/2+cc+std+lrd/2, hc/2-cc-std-lrd/2, 0.0))
 
     columnAssembly.translate(instanceList=('Stirrup Instance', ), vector=(0.0, 0.0, sts/2))
 
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance', ), direction1=(0.0, -1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance1', ), direction1=(-1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance2', ), direction1=(0.0, 1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
-    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance3', ), direction1=(1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(d-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance', ), direction1=(0.0, -1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(hc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance1', ), direction1=(-1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(bc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance2', ), direction1=(0.0, 1.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(hc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
+    columnAssembly.LinearInstancePattern(instanceList=('Lrebar Instance3', ), direction1=(1.0, 0.0, 0.0), direction2=(0.0, 1.0, 0.0), number1=int(nr/4), number2=1, spacing1=(bc-2*cc-2*std-lrd)/(nr/4), spacing2=sts)
 
     columnAssembly.LinearInstancePattern(instanceList=('Stirrup Instance', ), direction1=(0.0, 0.0, 1.0), direction2=(0.0, 1.0, 0.0), number1=int((L-sts/2)/sts)+1, number2=1, spacing1=sts, spacing2=sts)
 
@@ -446,11 +450,11 @@ column_model.parts['Lrebars'].generateMesh()
 
 session.viewports['Viewport: 1'].setValues(displayedObject=columnAssembly)
 
-#fy=fy*1.2 uncomment when defining the residual stresses based on means
+fy=235.0 #comment when defining the residual stresses based on strengths
 if resstrstep==1:
     #fy=100.0
     #el = column_model.parts['Beam'].elements.getByBoundingCylinder(center1=(b/2-15,(h-tf)/2,0),center2=(b/2-15,(h-tf)/2,40),radius =20)
-    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2, yMax=(h-tf)/2, zMin=0, zMax=40)
+    el = column_model.parts['Beam'].elements.getByBoundingBox(xMin=0, xMax=b/2, yMin=(h-tf)/2-1, yMax=(h-tf)/2+1, zMin=0, zMax=40)
 
     fl_mesh_a=meshsize
     for i in range(4):
@@ -559,7 +563,7 @@ elif geoimpstep==1:
             line_num = n
             break
     if line_num:
-        column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(L/500)+'\n2,'+str(L/500)+'')
+        column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/500)+'\n2,'+str(-L/500)+'')
     else:
         e = ("Error: Part '{}' was not found".format(partname),
             "in the Model KeywordBlock.")

@@ -5,15 +5,15 @@ import math
 import numpy as np
 import copy
 
-#name='B14_over' #comment when default name is used
-perfectstep=0 #only one of these can be 1
+name='A11' #comment when default name is used , line 136
+perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
-geoimpstep=1 #only one of these can be 1, imp values defined at the end of script
+geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=1 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
 shape='Circular' #Circular or Rect
 e=15.0 #load eccentricity
-ez=350.0 #rp distance from edge
+ez=25.0 #rp distance from edge
 
 t=10.0 #analysis time
 ms=100 #mass scale
@@ -133,7 +133,7 @@ cctab=tuple(map(tuple, cuttab))
 session.viewports['Viewport: 1'].view.setValues(session.views['Iso'])
 
 #column_model = mdb.models['Model-1']
-name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
+#name='_'.join([shape[:3],'d',str(int(d)),'fcm',str(int(fcm)),'h',str(int(h)),'fy',str(int(fy)),'sts',str(int(sts)),axis])
 
 if perfectstep==1:
     column_model=mdb.Model(name=name, modelType=STANDARD_EXPLICIT)
@@ -367,6 +367,11 @@ elif axis=='Weak':
     columnAssembly.ReferencePoint(point=(e, 0, -ez))
     refcoord=(e, 0, -ez)
 
+
+
+
+
+
 f1 = columnAssembly.instances['Concrete Instance'].faces
 faces5 = f1.getByBoundingBox(zMin=-1,zMax=0)
 r1 = columnAssembly.referencePoints.findAt(refcoord)
@@ -374,6 +379,14 @@ e1 = columnAssembly.instances['Profile Instance'].edges
 edges5 = e1.getByBoundingBox(zMin=-1,zMax=0)
 
 column_model.RigidBody(name='rigid_body', refPointRegion=(r1,), tieRegion=(faces5,edges5,))
+
+
+
+
+
+
+
+
 
 column_model.ContactProperty('Int_Fric')
 column_model.interactionProperties['Int_Fric'].TangentialBehavior(formulation=PENALTY, directionality=ISOTROPIC, slipRateDependency=OFF, pressureDependency=OFF, temperatureDependency=OFF, dependencies=0, table=((0.5, ), ), shearStressLimit=None, maximumElasticSlip=FRACTION, fraction=0.005, elasticSlipStiffness=None)
@@ -408,6 +421,8 @@ else:
     column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
 
 import mesh 
+
+
 
 region_profile_mesh=(f,)
 elem_type_profile=mesh.ElemType(elemCode=S4R, elemLibrary=EXPLICIT, secondOrderAccuracy=OFF, hourglassControl=DEFAULT)
