@@ -4,15 +4,34 @@ import regionToolset
 import math
 import numpy as np
 import copy
+import sketch
+import part
+import section
+import material
+import assembly
+import mesh 
+import regionToolset
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
 
-name='A15'  #comment when default name is used , line 136
+name='B14'  #comment when default name is used , line 136
 perfectstep=1 #only one of these can be 1
 bucklestep=0 #only one of these can be 1
 geoimpstep=0 #only one of these can be 1, imp values defined at the end of script
 resstrstep=0 #switch, 1 or 0 regardless of others
 axis='Strong'  #Strong or Weak
-shape='Circular' #Circular or Rect
-e=36.8 #load eccentricity
+shape='Rect' #Circular or Rect
+e=15.0 #load eccentricity
 ez=25.0 #rp distance from edge
 
 t=10.0 #analysis time
@@ -40,7 +59,7 @@ std=10.0 #stirrup diameter
 sts=75.0 #stirrup spacing
 fs=500.0 #rebaryield 
 fy=525.0 #profileyield 
-fcm=59.5 #concrete compressive strength
+fcm=92.7 #concrete compressive strength
 #
 
 steel_density=7.85e-9 #steel density
@@ -420,7 +439,7 @@ if bucklestep==1:
 else:
     column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=0, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
     column_model.DisplacementBC(name='BC-3', createStepName='Step-1', region=(r11,), u1=0, u2=0, u3=0, ur1=UNSET, ur2=UNSET, ur3=0, fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
-    column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
+    column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=500)
 
 import mesh 
 

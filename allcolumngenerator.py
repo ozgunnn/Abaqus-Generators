@@ -4,6 +4,25 @@ import regionToolset
 import math
 import numpy as np
 import copy
+import sketch
+import part
+import section
+import material
+import assembly
+import mesh 
+import regionToolset
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
 
 name='A11' #comment when default name is used , line 136
 perfectstep=1 #only one of these can be 1
@@ -142,7 +161,7 @@ elif bucklestep==1:
 elif geoimpstep==1:
     column_model=mdb.Model(name=name+'_geoimp', modelType=STANDARD_EXPLICIT)
 
-import material
+
 
 concmaterial=column_model.Material(name='mat_concrete')
 concmaterial.ConcreteDamagedPlasticity(table=((35,0.1,1.16,0.67,0),))
@@ -161,8 +180,7 @@ column_model.materials['mat_rebar'].Density(table=((steel_density, ), ))
 column_model.materials['mat_rebar'].Elastic(table=((Esteel_rebar, steel_poisson), ))
 column_model.materials['mat_rebar'].Plastic(table=((fs,0),))
 
-import sketch
-import part
+
 
 concrete_sketch=column_model.ConstrainedSketch(name='beam',sheetSize=160)
 
@@ -218,7 +236,7 @@ elif shape=="Circular":
 stirrup_part=column_model.Part(name='Stirrup',dimensionality=THREE_D,type=DEFORMABLE_BODY)
 stirrup_part.BaseWire(sketch=stirrup_sketch)
 
-import section
+
 
 column_model.HomogeneousShellSection(name='sec_flange', preIntegrate=OFF, material='mat_profile', thicknessType=UNIFORM, thickness=tf, thicknessField='', nodalThicknessField='', idealization=NO_IDEALIZATION, poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, useDensity=OFF,integrationRule=SIMPSON, numIntPts=5)
 column_model.HomogeneousShellSection(name='sec_web', preIntegrate=OFF, material='mat_profile', thicknessType=UNIFORM, thickness=tw, thicknessField='', nodalThicknessField='', idealization=NO_IDEALIZATION, poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, useDensity=OFF,integrationRule=SIMPSON, numIntPts=5)
@@ -251,7 +269,7 @@ column_model.BeamSection(name='Stirrup_Section', integration=DURING_ANALYSIS, po
 stirrup_edges=(stirrup_part.edges,)
 stirrup_part.SectionAssignment(region=stirrup_edges,sectionName='Stirrup_Section')
 
-import assembly
+
 
 columnAssembly=column_model.rootAssembly
 concreteInstance=columnAssembly.Instance(name='Concrete Instance',part=concrete_part,dependent=ON)
@@ -420,7 +438,6 @@ else:
     column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=0, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
     column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=1000)
 
-import mesh 
 
 
 
@@ -523,7 +540,7 @@ if bucklestep==1:
     multiprocessingMode=DEFAULT, name='Job_'+name+'_buckle', nodalOutputPrecision=SINGLE, 
     numCpus=1, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
-
+    name2='Job_'+name+'_buckle'
     column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
     column_model.keywordBlock.setValues()
     line_num = 0
@@ -546,6 +563,7 @@ elif perfectstep==1:
     multiprocessingMode=DEFAULT, name='Job_'+name, nodalOutputPrecision=SINGLE, 
     numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
+    name2='Job_'+name
 
 elif geoimpstep==1:
     mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
@@ -554,7 +572,7 @@ elif geoimpstep==1:
     multiprocessingMode=DEFAULT, name='Job_'+name+'_geoimp', nodalOutputPrecision=SINGLE, 
     numCpus=nocores, numDomains=nocores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
-
+    name2='Job_'+name+'_geoimp'
     column_model.keywordBlock.synchVersions(storeNodesAndElements=False)
     column_model.keywordBlock.setValues()
     line_num = 0
@@ -568,3 +586,5 @@ elif geoimpstep==1:
         e = ("Error: Part '{}' was not found".format(partname),
             "in the Model KeywordBlock.")
         raise Exception(" ".join(e))
+
+mdb.jobs[name2].writeInput()
