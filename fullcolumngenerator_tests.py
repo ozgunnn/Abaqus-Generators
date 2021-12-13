@@ -31,7 +31,7 @@ dic = {
       "ez,t":   [5.7, 18.8, 26.5, 22.2, 36.2 ,8.9  ,2.8 ,6.9 ,11.9],
       "ey,t":   [11.1 , 10.4, 2.5 ,  5.2, 0.2  ,2.8  ,1.6 ,3.5 ,11.5],
       "ez,b":   [0.9 , 34.5, 33.5, 34.5, 36.8 , 12.0,5.5 ,1.8 ,14.2],
-      "ey,b":   [1.1 , 6.3 , 2.5 , 0.5 , 1.8  ,7.1  ,1.8 ,1.4 ,10.8],
+      "ey,b":   [1.1 , 6.3 , 2.5 , 0.5 , 1.8  ,7.1  ,1.8 ,1.4 ,9.1],
       "fcm" :   [90.9 , 86.3 , 88.0 , 59.5 , 98.9  ,91.4  ,89.1 ,105.3 ,92.7],
       "nr"  :   [8,8,8,8,12,8,8,8,12],
       "lrd"  :  [16.0,16.0,16.0,20.0,20.0,16.0,16.0,16.0,20.0]}
@@ -46,7 +46,7 @@ for iii in range(9):
         axis='Strong'  #Strong or Weak
         shape=dic["shape"][iii] #Circular or Rect
         #e=15.0 #load eccentricity
-        ez=25.0 #rp distance from edge
+        ez=250.0 #rp distance from edge
 
         t=10.0 #analysis time
         ms=100 #mass scale
@@ -595,7 +595,7 @@ for iii in range(9):
                     line_num = n
                     break
             if line_num:
-                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/1000)+'\n2,'+str(-L/1000)+'')
+                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/750)+'\n2,'+str(-L/750)+'')
             else:
                 e = ("Error: Part '{}' was not found".format(partname),
                     "in the Model KeywordBlock.")
