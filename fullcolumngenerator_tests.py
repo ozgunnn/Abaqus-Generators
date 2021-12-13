@@ -595,7 +595,7 @@ for iii in range(9):
                     line_num = n
                     break
             if line_num:
-                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/750)+'\n2,'+str(-L/750)+'')
+                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/500)+'\n2,'+str(-L/500)+'')
             else:
                 e = ("Error: Part '{}' was not found".format(partname),
                     "in the Model KeywordBlock.")
