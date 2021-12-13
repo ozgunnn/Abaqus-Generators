@@ -394,16 +394,16 @@ for iii in range(9):
         column_model.EmbeddedRegion(name='Con_emb_reg', embeddedRegion=edges, hostRegion=None, weightFactorTolerance=1e-06, absoluteTolerance=0.0, fractionalTolerance=0.05, toleranceMethod=BOTH)
 
         if axis=='Strong':
-            columnAssembly.ReferencePoint(point=(dic["ey,b"][iii], dic["ez,b"][iii], -ez))
-            refcoord=(dic["ey,b"][iii], dic["ez,b"][iii], -ez)
-            columnAssembly.ReferencePoint(point=(dic["ey,t"][iii], dic["ez,t"][iii], L+ez))
-            refcoord1=(dic["ey,t"][iii], dic["ez,t"][iii], L+ez)
+            columnAssembly.ReferencePoint(point=(dic["ey,t"][iii], dic["ez,t"][iii], -ez))
+            refcoord=(dic["ey,t"][iii], dic["ez,t"][iii], -ez)
+            columnAssembly.ReferencePoint(point=(dic["ey,b"][iii], dic["ez,b"][iii], L+ez))
+            refcoord1=(dic["ey,b"][iii], dic["ez,b"][iii], L+ez)
             
         elif axis=='Weak':
-            columnAssembly.ReferencePoint(point=(dic["ez,b"][iii], dic["ey,b"][iii], -ez))
-            refcoord=(dic["ez,b"][iii], dic["ey,b"][iii], -ez)
-            columnAssembly.ReferencePoint(point=(dic["ez,t"][iii], dic["ey,t"][iii], L+ez))
-            refcoord1=(dic["ez,t"][iii], dic["ey,t"][iii], L+ez)
+            columnAssembly.ReferencePoint(point=(dic["ez,t"][iii], dic["ey,t"][iii], -ez))
+            refcoord=(dic["ez,t"][iii], dic["ey,t"][iii], -ez)
+            columnAssembly.ReferencePoint(point=(dic["ez,b"][iii], dic["ey,b"][iii], L+ez))
+            refcoord1=(dic["ez,b"][iii], dic["ey,b"][iii], L+ez)
 
         f1 = columnAssembly.instances['Concrete Instance'].faces
         faces5 = f1.getByBoundingBox(zMin=-1,zMax=0)
