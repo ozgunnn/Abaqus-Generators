@@ -453,7 +453,7 @@ for iii in range(9):
         else:
             column_model.DisplacementBC(name='BC-2', createStepName='Step-1', region=(r1,), u1=0, u2=0, u3=u, ur1=UNSET, ur2=UNSET, ur3=0, amplitude='Amp-1', fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
             column_model.DisplacementBC(name='BC-3', createStepName='Step-1', region=(r11,), u1=0, u2=0, u3=0, ur1=UNSET, ur2=UNSET, ur3=0, fixed=OFF, distributionType=UNIFORM, fieldName='', localCsys=None)
-            column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=500)
+            column_model.fieldOutputRequests['F-Output-1'].setValues(numIntervals=180)
 
         import mesh 
 
@@ -548,7 +548,6 @@ for iii in range(9):
                 column_model.parts['Beam'].Set(elements= el1+el2, name='FL_Set_x='+str(int(x)))
                 column_model.Stress( distributionType=UNIFORM, name='Predefined Field-'+'FL_Set_x='+str(int(x)), region=column_model.rootAssembly.instances['Profile Instance'].sets['FL_Set_x='+str(int(x))], sigma11=0.5*fy-abs(x)*fy/(b/2), sigma12=0.0, sigma13=None, sigma22=0.0, sigma23=None, sigma33=None)
             
-
         if bucklestep==1:
             mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
             explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
@@ -596,7 +595,7 @@ for iii in range(9):
                     line_num = n
                     break
             if line_num:
-                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/500)+'\n2,'+str(-L/500)+'')
+                column_model.keywordBlock.insert(position=line_num,text='*IMPERFECTION,FILE=Job_'+name+'_buckle,STEP=1 \n1,'+str(-L/1000)+'\n2,'+str(-L/1000)+'')
             else:
                 e = ("Error: Part '{}' was not found".format(partname),
                     "in the Model KeywordBlock.")
