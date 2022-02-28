@@ -36,7 +36,7 @@ dic = {
       "nr"  :   [8,8,8,8,12,8,8,8,12],
       "lrd"  :  [16.0,16.0,16.0,20.0,20.0,16.0,16.0,16.0,20.0]}
 
-for iii in [8]:
+for iii in [2]:
     for jjj in [[1,0],[0,1]]:
         name=dic["names"][iii]  #comment when default name is used , line 136
         perfectstep=0 #only one of these can be 1
